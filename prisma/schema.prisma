@@ -13,6 +13,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum SubmissionStatus {
+  pending
+  approved
+  rejected
+}
+
 model Admin {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -48,7 +54,7 @@ model CommunitySubmission {
   organizerEmail  String    @map("organizer_email")
   communityName   String    @map("community_name")
   description     String?
-  status          String    @default("pending") // 'pending', 'approved', 'rejected'
+  status          SubmissionStatus    @default(pending) // 'pending', 'approved', 'rejected'
   createdAt       DateTime  @default(now()) @map("created_at")
 
   @@map("community_submissions")
