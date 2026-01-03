@@ -8,6 +8,10 @@ interface EnvConfig {
   JWT_EXPIRES_IN: string;
   PORT: number;
   NODE_ENV: string;
+  SANITY_PROJECT_ID: string;
+  SANITY_DATASET: string;
+  SANITY_API_VERSION: string;
+  SANITY_TOKEN?: string;
 }
 
 const getEnvVar = (key: string, defaultValue?: string): string => {
@@ -24,4 +28,8 @@ export const env: EnvConfig = {
   JWT_EXPIRES_IN: getEnvVar('JWT_EXPIRES_IN', '7d'),
   PORT: parseInt(getEnvVar('PORT', '3000'), 10),
   NODE_ENV: getEnvVar('NODE_ENV', 'development'),
+  SANITY_PROJECT_ID: getEnvVar('SANITY_PROJECT_ID'),
+  SANITY_DATASET: getEnvVar('SANITY_DATASET'),
+  SANITY_API_VERSION: getEnvVar('SANITY_API_VERSION', '2026-01-03'),
+  SANITY_TOKEN: process.env.SANITY_TOKEN,
 };

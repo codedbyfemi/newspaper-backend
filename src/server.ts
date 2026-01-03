@@ -22,7 +22,7 @@ const startServer = async () => {
 
 // Handle shutdown gracefully
 process.on('SIGINT', async () => {
-  console.log('\nxxxxx Shutting down gracefully...');
+  console.log('\nxShutting down gracefully...');
   await prisma.$disconnect();
   process.exit(0);
 });

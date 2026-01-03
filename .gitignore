@@ -4,4 +4,4 @@ node_modules/
 .env.example
 .DS_Store
 
-/src/generated/prisma
+/prisma/generated
