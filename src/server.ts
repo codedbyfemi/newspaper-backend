@@ -25,6 +25,6 @@ process.on('SIGINT', async () => {
   console.log('\nxShutting down gracefully...');
   await prisma.$disconnect();
   process.exit(0);
-});
+}); 
 
 startServer();

@@ -81,6 +81,10 @@ export class ArticlesController {
       if (message === 'Article not found') {
         return ResponseUtil.error(res, message, 404);
       }
+
+      if (message === 'Only posts can be set as Editor\'s Pick') {
+        return ResponseUtil.error(res, message, 400);
+      }
       
       return ResponseUtil.error(res, message, 500);
     }

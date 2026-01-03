@@ -29,13 +29,71 @@ model Admin {
 model Article {
   id             String    @id @default(uuid())
   sanityId       String    @unique @map("sanity_id")
+  type           String
   title          String
   slug           String    @unique
   author         String?
+  isPost         Boolean   @map("is_post")
   visibility     String    @default("private") // 'public' or 'private'
   isEditorsPick  Boolean   @default(false) @map("is_editors_pick")
   lastSyncedAt   DateTime  @default(now()) @map("last_synced_at")
   createdAt      DateTime  @default(now()) @map("created_at")
 
   @@map("articles")
+}
+
+model CommunitySubmission {
+  id              String    @id @default(uuid())
+  organizerName   String    @map("organizer_name")
+  organizerEmail  String    @map("organizer_email")
+  communityName   String    @map("community_name")
+  description     String?
+  status          String    @default("pending") // 'pending', 'approved', 'rejected'
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@map("community_submissions")
+}
+
+model Community {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  members     CommunityMember[]
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  id                    String    @id @default(uuid())
+  communityId           String    @map("community_id")
+  name                  String
+  email                 String
+  notificationsEnabled  Boolean   @default(true) @map("notifications_enabled")
+  deletedAt             DateTime? @map("deleted_at")
+  deletedBy             String?   @map("deleted_by") // Admin ID who deleted, or 'self' for voluntary exit
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  community             Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, email])
+  @@map("community_members")
+}
+
+model CommunityOtp {
+  id              String    @id @default(uuid())
+  communityId     String    @map("community_id")
+  email           String
+  name            String?   // For join requests
+  otp             String
+  action          String    // 'join' or 'leave'
+  expiresAt       DateTime  @map("expires_at")
+  verified        Boolean   @default(false)
+  verifiedAt      DateTime? @map("verified_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([communityId, email, action])
+  @@map("community_otps")
 }

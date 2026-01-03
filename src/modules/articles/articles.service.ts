@@ -18,6 +18,10 @@ export class ArticlesService {
         where: { sanityId: sanityArticle._id },
       });
 
+      // Determine type and infer isPost
+      const type = sanityArticle._type || 'article'; // Default to 'article' if not set
+      const isPost = type.toLowerCase() === 'post';
+
       if (!existingArticle) {
         // Create new article
         await prisma.article.create({
@@ -26,6 +30,8 @@ export class ArticlesService {
             title: sanityArticle.title,
             slug: sanityArticle.slug,
             author: sanityArticle.author || null,
+            type,
+            isPost,
             visibility: 'private', // Default to private
             isEditorsPick: false,
             lastSyncedAt: new Date(),
@@ -40,6 +46,8 @@ export class ArticlesService {
             title: sanityArticle.title,
             slug: sanityArticle.slug,
             author: sanityArticle.author || null,
+            type,
+            isPost,
             lastSyncedAt: new Date(),
           },
         });
@@ -66,6 +74,8 @@ export class ArticlesService {
         title: true,
         slug: true,
         author: true,
+        type: true,
+        isPost: true,
         visibility: true,
         isEditorsPick: true,
         lastSyncedAt: true,
@@ -93,6 +103,7 @@ export class ArticlesService {
 
   /**
    * Set article as Editor's Pick (exclusive - only one at a time)
+   * Only posts (type === 'post') can be set as Editor's Pick
    */
   async setEditorsPick(articleId: string) {
     const article = await prisma.article.findUnique({
@@ -101,6 +112,11 @@ export class ArticlesService {
 
     if (!article) {
       throw new Error('Article not found');
+    }
+
+    // Check if article is a post
+    if (!article.isPost) {
+      throw new Error('Only posts can be set as Editor\'s Pick');
     }
 
     // Use transaction to ensure atomicity
@@ -132,6 +148,8 @@ export class ArticlesService {
         title: true,
         slug: true,
         author: true,
+        type: true,
+        isPost: true,
         isEditorsPick: true,
         lastSyncedAt: true,
       },
@@ -150,6 +168,8 @@ export class ArticlesService {
         title: true,
         slug: true,
         author: true,
+        type: true,
+        isPost: true,
         isEditorsPick: true,
         lastSyncedAt: true,
       },

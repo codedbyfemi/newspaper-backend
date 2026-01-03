@@ -4,6 +4,7 @@ export interface SanityArticle {
   title: string;
   slug: string;
   author?: string;
+  _type?: string; // Optional in case some articles don't have type set
   _createdAt: string;
   _updatedAt: string;
 }
@@ -15,6 +16,8 @@ export interface Article {
   title: string;
   slug: string;
   author: string | null;
+  type: string;
+  isPost: boolean;
   visibility: 'public' | 'private';
   isEditorsPick: boolean;
   lastSyncedAt: Date;
@@ -28,6 +31,8 @@ export interface ArticleListItem {
   title: string;
   slug: string;
   author: string | null;
+  type: string;
+  isPost: boolean;
   visibility: 'public' | 'private';
   isEditorsPick: boolean;
   lastSyncedAt: Date;
